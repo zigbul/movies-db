@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import format from 'date-fns/format';
 import { Rate } from 'antd';
 
-const MovieCard = ({ title, overview, releaseDate, posterURL, id }) => {
+const MovieCard = ({ title, overview, releaseDate, posterURL, id, rating, rateMovie }) => {
 
    function stringCutter(str, endIndex) {
       if(str.length > endIndex) {
@@ -22,20 +22,6 @@ const MovieCard = ({ title, overview, releaseDate, posterURL, id }) => {
       }
    }
 
-   const onRateMovie = (value) => {
-      return fetch(`
-      https://api.themoviedb.org/3/movie/${id}/rating?api_key=a76933120539bb595d9b2c24cec6040a&guest_session_id=${localStorage.getItem('guestSessionID')}`,
-      {
-         method: "POST",
-         headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-         },
-         "value": value,
-      })
-      .then( res => res.json())
-      .then( data => console.log(data));
-   }
-
    return (
       <li className="film-list__item film-card">
          <img src={posterURL} className="film-card__poster" alt="film-poster" width="183px" height="281px"/>
@@ -45,7 +31,7 @@ const MovieCard = ({ title, overview, releaseDate, posterURL, id }) => {
                   {title}
                </h2>
                <div className="rate-circle">
-                  6.5
+                  {rating ?? 0}
                </div>
             </div>
             <span className="film-card__date">
@@ -60,13 +46,14 @@ const MovieCard = ({ title, overview, releaseDate, posterURL, id }) => {
                </li>
             </ul>
             <p className="film-card__overview">
-            {stringCutter(overview, 200)}
+            {stringCutter(overview, 100)}
             </p>
             <Rate
               allowHalf 
               defaultValue={0}
+              value={rating}
               count={10}
-              onChange={(value) => onRateMovie(value)}
+              onChange={(value) => rateMovie(value, id)}
             />
          </div>
       </li>
