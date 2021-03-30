@@ -5,6 +5,8 @@ import { debounce } from 'lodash';
 import { Pagination, Spin, Input, Tabs } from 'antd';
 import 'antd/dist/antd.css';
 import '../../index.css';
+import { useLocalStorage } from '../../useLocalStorage';
+import { MyContext } from '../../context';
 
 const API_KEY = "api_key=a76933120539bb595d9b2c24cec6040a";
 
@@ -17,6 +19,10 @@ const MoviesApp = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalMovies, setTotalMovies] = useState(null);
   const [queryString, setQueryString] = useState('return');
+  const [ratedMovies, setRatedMovies] = useLocalStorage('ratedMovies', {})
+  const [genres, setGenres] = useState([]);
+
+  console.log(moviesData);
 
   useEffect(() => {
     if (!localStorage.guestSessionID) {
@@ -25,6 +31,11 @@ const MoviesApp = () => {
       .then( data => localStorage.setItem('guestSessionID', data.guest_session_id))
       .catch( e => console.log(e));
     }
+
+    fetch(`https://api.themoviedb.org/3/genre/movie/list?${API_KEY}`)
+      .then( res => res.json())
+      .then( data => setGenres(data.genres))
+      .catch( e => console.log(e));
   }, [])
 
   useEffect(() => {
@@ -53,62 +64,65 @@ const MoviesApp = () => {
     setLoading(true);
   }
 
-  const rateMovie = (value, id) => {
-    return fetch(`https://api.themoviedb.org/3/movie/${id}/rating?api_key=a76933120539bb595d9b2c24cec6040a&guest_session_id=${localStorage.getItem('guestSessionID')}`,
-      {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        "value": value,
-      })
-    .then( res => res.json())
-    .then( data => console.log(data))
-    .catch( e => console.log(e));
-  }
-
   // const rateMovie = (value, id) => {
-  //   const arr = moviesData.map( movie => {
-  //     if(movie.id === id) {
-  //       return { ...movie, rating: value, rated: true};
-  //     }
-  //     return movie;
-  //   });
-  //   setMoviesData(arr);
+  //   return fetch(`https://api.themoviedb.org/3/movie/${id}/rating?api_key=a76933120539bb595d9b2c24cec6040a&guest_session_id=${localStorage.getItem('guestSessionID')}`,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         'Content-Type': 'application/json;charset=utf-8',
+  //       },
+  //       "value": value,
+  //     })
+  //   .then( res => res.json())
+  //   .then( data => console.log(data))
+  //   .catch( e => console.log(e));
   // }
 
+  const rateMovie = (value, id) => {
+    const arr = moviesData.map( movie => {
+      if(movie.id === id) {
+        setRatedMovies({...ratedMovies, [movie.id]: {...movie, rating: value, rated: true}});
+        return { ...movie, rating: value, rated: true};
+      }
+      return movie;
+    });
+    setMoviesData(arr);
+  }
+
   return (
-    <div className="container">
-      <Tabs defaultActiveKey="1" className="tabs">
-        <TabPane tab="Search" key="1">
-          <Input 
-            className="input"
-            placeholder="Type to search movies"
-            onChange={debounce((e) => onStringChange(e), 3000)}
-          />
-          {loading ? <Spin size="large" className="spinner" /> : <MoviesList  moviesData={moviesData} rateMovie={rateMovie} />}
-          <Pagination 
-            className="pagination"
-            current={currentPage} 
-            onChange={(page) => onPageChange(page)}
-            defaultPageSize={20}
-            total={totalMovies}
-            showSizeChanger={false} 
-          />
-        </TabPane>
-        <TabPane tab="Rated" key="2">
-          {<RatedList  moviesData={moviesData} rateMovie={rateMovie} />}
-          {/* <Pagination 
-            className="pagination"
-            current={currentPage} 
-            onChange={(page) => onPageChange(page)}
-            defaultPageSize={20}
-            total={totalMovies}
-            showSizeChanger={false} 
-          /> */}
-        </TabPane>
-      </Tabs>
-    </div>
+    <MyContext.Provider value={genres}>
+      <div className="container">
+        <Tabs defaultActiveKey="1" className="tabs">
+          <TabPane tab="Search" key="1">
+            <Input 
+              className="input"
+              placeholder="Type to search movies"
+              onChange={debounce((e) => onStringChange(e), 3000)}
+            />
+            {loading ? <Spin size="large" className="spinner" /> : <MoviesList  moviesData={moviesData} rateMovie={rateMovie} />}
+            <Pagination 
+              className="pagination"
+              current={currentPage} 
+              onChange={(page) => onPageChange(page)}
+              defaultPageSize={20}
+              total={totalMovies}
+              showSizeChanger={false} 
+            />
+          </TabPane>
+          <TabPane tab="Rated" key="2">
+            {<RatedList  moviesData={ratedMovies} rateMovie={rateMovie} />}
+            {/* <Pagination 
+              className="pagination"
+              current={currentPage} 
+              onChange={(page) => onPageChange(page)}
+              defaultPageSize={20}
+              total={totalMovies}
+              showSizeChanger={false} 
+            /> */}
+          </TabPane>
+        </Tabs>
+      </div>
+    </MyContext.Provider>
   );
 };
 

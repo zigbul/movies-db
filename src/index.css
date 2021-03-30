@@ -68,10 +68,27 @@ li {
    display: flex;
    justify-content: center;
    align-items: center;
+   border: 2px solid #000;
    width: 30px;
    height: 30px;
-   border: 2px solid #E9D100;
    border-radius: 50%;
+   font-weight: bold;
+}
+
+.rate-circle_low-rating {
+   border: 2px solid #E90000;
+}
+
+.rate-circle_avarage-rating {
+   border: 2px solid #E97E00;
+}
+
+.rate-circle_good-rating {
+   border: 2px solid #E9D100;
+}
+
+.rate-circle_high-rating {
+   border: 2px solid #66E900;
 }
 
 .film-card__date {
