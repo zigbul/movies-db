@@ -107,13 +107,15 @@ li {
 
 .genre-list {
    display: flex;
+   flex-wrap: wrap;
 }
 
 .genre-list__item {
    display: flex;
    justify-content: center;
    align-items: center;
-   width: 46px;
+   padding: 0 2px;
+   margin-bottom: 5px;
    height: 20px;
    background: #FAFAFA;
    border: 1px solid #D9D9D9;
