@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import MoviesList from '../Movies-list';
 import RatedList from '../Rated-list';
 import { debounce } from 'lodash';
-import { Pagination, Spin, Input, Tabs } from 'antd';
+import { Pagination, Spin, Input, Tabs, Alert } from 'antd';
 import 'antd/dist/antd.css';
 import '../../index.css';
 import { useLocalStorage } from '../../useLocalStorage';
 import { MyContext } from '../../context';
-
-const API_KEY = "api_key=a76933120539bb595d9b2c24cec6040a";
+import { API_KEY } from '../../helper';
 
 const MoviesApp = () => {
 
@@ -19,10 +18,8 @@ const MoviesApp = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalMovies, setTotalMovies] = useState(null);
   const [queryString, setQueryString] = useState('return');
-  const [ratedMovies, setRatedMovies] = useLocalStorage('ratedMovies', {})
+  const [ratedMovies, setRatedMovies] = useLocalStorage('ratedMovies', {});
   const [genres, setGenres] = useState([]);
-
-  console.log(moviesData);
 
   useEffect(() => {
     if (!localStorage.guestSessionID) {
@@ -64,30 +61,30 @@ const MoviesApp = () => {
     setLoading(true);
   }
 
-  // const rateMovie = (value, id) => {
-  //   return fetch(`https://api.themoviedb.org/3/movie/${id}/rating?api_key=a76933120539bb595d9b2c24cec6040a&guest_session_id=${localStorage.getItem('guestSessionID')}`,
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         'Content-Type': 'application/json;charset=utf-8',
-  //       },
-  //       "value": value,
-  //     })
-  //   .then( res => res.json())
-  //   .then( data => console.log(data))
-  //   .catch( e => console.log(e));
-  // }
-
   const rateMovie = (value, id) => {
-    const arr = moviesData.map( movie => {
-      if(movie.id === id) {
-        setRatedMovies({...ratedMovies, [movie.id]: {...movie, rating: value, rated: true}});
-        return { ...movie, rating: value, rated: true};
-      }
-      return movie;
-    });
-    setMoviesData(arr);
+    return fetch(`https://api.themoviedb.org/3/movie/${id}/rating?api_key=a76933120539bb595d9b2c24cec6040a&guest_session_id=${localStorage.getItem('guestSessionID')}`,
+      {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        "value": value,
+      })
+    .then( res => res.json())
+    .then( data => console.log(data))
+    .catch( e => console.log(e));
   }
+
+  // const rateMovie = (id) => {
+  //   const arr = moviesData.map( movie => {
+  //     if(movie.id === id) {
+  //       setRatedMovies({...ratedMovies, [movie.id]: {...movie, rated: true}});
+  //       return { ...movie, rated: true};
+  //     }
+  //     return movie;
+  //   });
+  //   setMoviesData(arr);
+  // }
 
   return (
     <MyContext.Provider value={genres}>
@@ -97,28 +94,22 @@ const MoviesApp = () => {
             <Input 
               className="input"
               placeholder="Type to search movies"
-              onChange={debounce((e) => onStringChange(e), 3000)}
+              onChange={debounce((e) => onStringChange(e), 1000)}
             />
-            {loading ? <Spin size="large" className="spinner" /> : <MoviesList  moviesData={moviesData} rateMovie={rateMovie} />}
-            <Pagination 
-              className="pagination"
-              current={currentPage} 
-              onChange={(page) => onPageChange(page)}
-              defaultPageSize={20}
-              total={totalMovies}
-              showSizeChanger={false} 
-            />
+            {loading ? <Spin size="large" className="spinner" /> : moviesData.length === 0 
+                     ? <Alert message="No movies found" type="info" showIcon />
+                     : <MoviesList  moviesData={moviesData} rateMovie={rateMovie} />}
+            {moviesData.length === 0 ? null : <Pagination 
+                                                className="pagination"
+                                                current={currentPage} 
+                                                onChange={(page) => onPageChange(page)}
+                                                defaultPageSize={20}
+                                                total={totalMovies}
+                                                showSizeChanger={false} 
+                                              />}
           </TabPane>
           <TabPane tab="Rated" key="2">
             {<RatedList  moviesData={ratedMovies} rateMovie={rateMovie} />}
-            {/* <Pagination 
-              className="pagination"
-              current={currentPage} 
-              onChange={(page) => onPageChange(page)}
-              defaultPageSize={20}
-              total={totalMovies}
-              showSizeChanger={false} 
-            /> */}
           </TabPane>
         </Tabs>
       </div>

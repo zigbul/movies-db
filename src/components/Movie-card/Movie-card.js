@@ -4,7 +4,7 @@ import format from 'date-fns/format';
 import { Rate } from 'antd';
 import GenreList from './Genre-list';
 
-const MovieCard = ({ title, overview, releaseDate, posterURL, id, rating, rateMovie, genre_ids }) => {
+const MovieCard = ({ title, overview, release_date, posterURL, id, rating, rateMovie, genre_ids, vote_average }) => {
 
    function stringCutter(str, endIndex) {
       if(str.length > endIndex) {
@@ -25,11 +25,11 @@ const MovieCard = ({ title, overview, releaseDate, posterURL, id, rating, rateMo
 
    let circleColor = "rate-circle";
 
-   if (rating < 3 || rating === undefined) {
+   if (vote_average < 3 || vote_average === undefined) {
       circleColor = "rate-circle rate-circle_low-rating";
-   } else if (rating < 5) {
+   } else if (vote_average < 5) {
       circleColor = "rate-circle rate-circle_avarage-rating";
-   } else if (rating < 7) {
+   } else if (vote_average < 7) {
       circleColor = "rate-circle rate-circle_good-rating";
    } else {
       circleColor = "rate-circle rate-circle_high-rating";
@@ -39,16 +39,17 @@ const MovieCard = ({ title, overview, releaseDate, posterURL, id, rating, rateMo
       <li className="film-list__item film-card">
          <img src={posterURL} className="film-card__poster" alt="film-poster" width="183px" height="281px"/>
          <div className="film-card__body">
+            <img src={posterURL} className="film-card__poster-mobile" alt="film-poster" width="60px" height="91px"/>
             <div className="header-wrapper">
                <h2 className="film-card__header">
                   {title}
                </h2>
                <div className={circleColor}>
-                  {rating ?? 0}
+                  {vote_average}
                </div>
             </div>
             <span className="film-card__date">
-               {dateChecker(releaseDate)}
+               {dateChecker(release_date)}
             </span>
             <GenreList genre_ids={genre_ids} />
             <p className="film-card__overview">
@@ -57,7 +58,7 @@ const MovieCard = ({ title, overview, releaseDate, posterURL, id, rating, rateMo
             <Rate
               allowHalf 
               defaultValue={0}
-              value={rating}
+              value={vote_average}
               count={10}
               onChange={(value) => rateMovie(value, id)}
             />

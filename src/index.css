@@ -42,6 +42,14 @@ li {
    box-shadow: 5px 5px 10px lightgray;
 }
 
+.film-card__poster {
+   display: flex;
+}
+
+.film-card__poster-mobile {
+   display: none;
+}
+
 .film-card__body {
    display: flex;
    flex: 1 1 auto;
@@ -148,4 +156,73 @@ li {
 
 .anticon.anticon-star {
    font-size: 15px;
+}
+
+@media (max-width: 1009px) {
+   .container {
+      padding: 17px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+   }
+
+   .ant-tabs {
+      width: 100%;
+   }
+
+   .film-list {
+      justify-content: center;
+   }
+
+   .film-card {
+      width: 387px;
+      height: 245px;
+   }
+
+   .film-card__poster {
+      display: none;
+   }
+
+   .film-card__body {
+      padding: 5px 10px;
+      display: grid;
+      grid-template-areas: 
+         "poster header header header"
+         "poster date date date"
+         "poster genres genres genres"
+         "overview overview overview overview"
+         "stars stars stars stars";
+   }
+
+   .film-card__poster-mobile {
+      grid-area: poster;
+      display: flex;
+      flex-basis: 13%;
+      margin-right: 13px;
+   }
+
+   .header-wrapper {
+      grid-area: header;
+      width: 221px;
+   }
+
+   .film-card__date {
+      grid-area: date;
+   }
+
+   .genre-list {
+      grid-area: genres;
+   }
+
+   .film-card__overview {
+      grid-area: overview;
+   }
+
+   .ant-rate {
+      grid-area: stars;
+      display: flex;
+      align-self: end;
+      justify-self: end;
+   }
+
 }
