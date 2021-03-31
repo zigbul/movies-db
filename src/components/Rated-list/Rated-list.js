@@ -1,15 +1,9 @@
 import React from 'react';
 import MovieCard from '../Movie-card';
 import { setID, basePosterURL, defaultPosterURL } from '../../helper';
+import { Alert } from 'antd';
 
 const RatedList = ({ moviesData, rateMovie }) => {
-
-   // const filtredFilms = moviesData.filter( movie => {
-   //    if (movie.rated) {
-   //       return movie;
-   //    }
-   //    return false;
-   // });
 
    const ratedMovies = [];
 
@@ -31,7 +25,7 @@ const RatedList = ({ moviesData, rateMovie }) => {
 
    return (
       <ul className="film-list">
-         {elements.length === 0 ? <h1>No movies</h1> : elements}
+         {elements.length === 0 ? <Alert message="No movies found" type="info" showIcon /> : elements}
       </ul>
    )
 }
