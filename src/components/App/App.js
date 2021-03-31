@@ -61,30 +61,30 @@ const MoviesApp = () => {
     setLoading(true);
   }
 
-  const rateMovie = (value, id) => {
-    return fetch(`https://api.themoviedb.org/3/movie/${id}/rating?api_key=a76933120539bb595d9b2c24cec6040a&guest_session_id=${localStorage.getItem('guestSessionID')}`,
-      {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        "value": value,
-      })
-    .then( res => res.json())
-    .then( data => console.log(data))
-    .catch( e => console.log(e));
-  }
-
-  // const rateMovie = (id) => {
-  //   const arr = moviesData.map( movie => {
-  //     if(movie.id === id) {
-  //       setRatedMovies({...ratedMovies, [movie.id]: {...movie, rated: true}});
-  //       return { ...movie, rated: true};
-  //     }
-  //     return movie;
-  //   });
-  //   setMoviesData(arr);
+  // const rateMovie = (value, id) => {
+  //   return fetch(`https://api.themoviedb.org/3/movie/${id}/rating?api_key=a76933120539bb595d9b2c24cec6040a&guest_session_id=${localStorage.getItem('guestSessionID')}`,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         'Content-Type': 'application/json;charset=utf-8',
+  //       },
+  //       "value": value,
+  //     })
+  //   .then( res => res.json())
+  //   .then( data => console.log(data))
+  //   .catch( e => console.log(e));
   // }
+
+  const rateMovie = (id) => {
+    const arr = moviesData.map( movie => {
+      if(movie.id === id) {
+        setRatedMovies({...ratedMovies, [movie.id]: {...movie, rated: true}});
+        return { ...movie, rated: true};
+      }
+      return movie;
+    });
+    setMoviesData(arr);
+  }
 
   return (
     <MyContext.Provider value={genres}>
