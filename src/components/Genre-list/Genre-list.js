@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { MyContext } from '../../../context';
-import { setID } from '../../../helper';
+import { MyContext } from '../../context';
+import { setID } from '../../helper';
 
 const GenreList = ({ genre_ids }) => {
 

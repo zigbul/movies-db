@@ -4,7 +4,7 @@ import format from 'date-fns/format';
 import { Rate } from 'antd';
 import GenreList from '../Genre-list';
 
-const MovieCard = ({ title, overview, release_date, posterURL, id, rateMovie, genre_ids, vote_average }) => {
+const RatedMovieCard = ({ title, overview, release_date, posterURL, id, unRateMovie, genre_ids, vote_average }) => {
 
    function stringCutter(str, endIndex) {
       if(str.length > endIndex) {
@@ -60,22 +60,22 @@ const MovieCard = ({ title, overview, release_date, posterURL, id, rateMovie, ge
               defaultValue={0}
               value={vote_average}
               count={10}
-              onChange={(value) => rateMovie(value, id)}
+              onChange={() => unRateMovie(id)}
             />
          </div>
       </li>
    );
 };
 
-MovieCard.defaultProps = {
+RatedMovieCard.defaultProps = {
    releaseDate: '',
 }
 
-MovieCard.propTypes = {
+RatedMovieCard.propTypes = {
    title: PropTypes.string,
    overview: PropTypes.string,
    releaseDate: PropTypes.string,
    poster: PropTypes.string
 }
 
-export default MovieCard;
+export default RatedMovieCard;

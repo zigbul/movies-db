@@ -7,9 +7,9 @@ import 'antd/dist/antd.css';
 import '../../index.css';
 import { useLocalStorage } from '../../useLocalStorage';
 import { MyContext } from '../../context';
-// import { API_KEY } from '../../helper';
+import { API_KEY } from '../../helper';
 
-const API_KEY = 'api_key=a76933120539bb595d9b2c24cec6040a';
+// const API_KEY = 'api_key=a76933120539bb595d9b2c24cec6040a';
 
 const MoviesApp = () => {
 
@@ -63,29 +63,45 @@ const MoviesApp = () => {
     setLoading(true);
   }
 
-  // const rateMovie = (value, id) => {
-  //   return fetch(`https://api.themoviedb.org/3/movie/${id}/rating?api_key=a76933120539bb595d9b2c24cec6040a&guest_session_id=${localStorage.getItem('guestSessionID')}`,
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         'Content-Type': 'application/json;charset=utf-8',
-  //       },
-  //       "value": value,
-  //     })
-  //   .then( res => res.json())
-  //   .then( data => console.log(data))
-  //   .catch( e => console.log(e));
-  // }
-
-  const rateMovie = (id) => {
-    const arr = moviesData.map( movie => {
-      if(movie.id === id) {
-        setRatedMovies({...ratedMovies, [movie.id]: {...movie, rated: true}});
-        return { ...movie, rated: true};
+  const rateMovie = (value, id) => {
+    fetch(`https://api.themoviedb.org/3/movie/${id}/rating?${API_KEY}&guest_session_id=${localStorage.getItem('guestSessionID')}`,
+      {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify({"value": value}),
+      })
+    .then( res => res.json())
+    .then( () => {
+      for (let movie of moviesData) {
+        if(movie.id === id) {
+          setRatedMovies({...ratedMovies, [movie.id]: {...movie, rated: true}});
+        }
       }
-      return movie;
-    });
-    setMoviesData(arr);
+    })
+    .catch( e => console.log(e));
+  }
+
+  const unRateMovie = (id) => {
+    fetch(`https://api.themoviedb.org/3/movie/${id}/rating?${API_KEY}&guest_session_id=${localStorage.getItem('guestSessionID')}`,
+    {
+      method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+    })
+    .then( res => res.json())
+    .then( () => {
+      let obj = {};
+      for (let movie in ratedMovies) {
+        if(ratedMovies[movie].id !== id) {
+          obj = {...obj, [ratedMovies[movie].id]: ratedMovies[movie]}
+        }
+      }
+      setRatedMovies(obj);
+    })
+    .catch( e => console.log(e));
   }
 
   return (
@@ -111,7 +127,7 @@ const MoviesApp = () => {
                                               />}
           </TabPane>
           <TabPane tab="Rated" key="2">
-            {<RatedList  moviesData={ratedMovies} rateMovie={rateMovie} />}
+            {<RatedList  moviesData={ratedMovies} unRateMovie={unRateMovie} />}
           </TabPane>
         </Tabs>
       </div>

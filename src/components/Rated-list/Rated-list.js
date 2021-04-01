@@ -1,9 +1,9 @@
 import React from 'react';
-import MovieCard from '../Movie-card';
+import RatedMovieCard from '../Rated-movie-card';
 import { setID, basePosterURL, defaultPosterURL } from '../../helper';
 import { Alert } from 'antd';
 
-const RatedList = ({ moviesData, rateMovie }) => {
+const RatedList = ({ moviesData, unRateMovie }) => {
 
    const ratedMovies = [];
 
@@ -14,11 +14,11 @@ const RatedList = ({ moviesData, rateMovie }) => {
    const elements = ratedMovies.map(({ poster_path, ...movieItems }) => {
 
       return (
-         <MovieCard
+         <RatedMovieCard
             key={setID()}
             {...movieItems}
             posterURL={poster_path ? basePosterURL + poster_path : defaultPosterURL}
-            rateMovie={rateMovie}
+            unRateMovie={unRateMovie}
          />
       )
    });
