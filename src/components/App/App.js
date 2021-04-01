@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import MoviesList from '../Movies-list';
 import RatedList from '../Rated-list';
 import { debounce } from 'lodash';
-import { Pagination, Spin, Input, Tabs, Alert, AutoComplete } from 'antd';
+import { Pagination, Spin, Input, Tabs, Alert } from 'antd';
 import 'antd/dist/antd.css';
 import '../../index.css';
 import { useLocalStorage } from '../../useLocalStorage';
 import { MyContext } from '../../context';
 import { API_KEY } from '../../helper';
-
-// const API_KEY = 'api_key=a76933120539bb595d9b2c24cec6040a';
 
 const MoviesApp = () => {
 
