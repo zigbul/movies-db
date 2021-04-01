@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MoviesList from '../Movies-list';
 import RatedList from '../Rated-list';
 import { debounce } from 'lodash';
-import { Pagination, Spin, Input, Tabs, Alert } from 'antd';
+import { Pagination, Spin, Input, Tabs, Alert, AutoComplete } from 'antd';
 import 'antd/dist/antd.css';
 import '../../index.css';
 import { useLocalStorage } from '../../useLocalStorage';

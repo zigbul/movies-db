@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "antd": "^4.14.1",
+    "classnames": "^2.3.0",
     "date-fns": "^2.19.0",
     "dotenv-webpack": "^7.0.2",
     "lodash": "^4.17.21"

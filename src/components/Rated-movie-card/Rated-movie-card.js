@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import format from 'date-fns/format';
 import { Rate } from 'antd';
 import GenreList from '../Genre-list';
+import classNames from 'classnames';
 
 const RatedMovieCard = ({ title, overview, release_date, posterURL, id, unRateMovie, genre_ids, vote_average }) => {
 
@@ -23,17 +24,12 @@ const RatedMovieCard = ({ title, overview, release_date, posterURL, id, unRateMo
       }
    }
 
-   let circleColor = "rate-circle";
-
-   if (vote_average < 3 || vote_average === undefined) {
-      circleColor = "rate-circle rate-circle_low-rating";
-   } else if (vote_average < 5) {
-      circleColor = "rate-circle rate-circle_avarage-rating";
-   } else if (vote_average < 7) {
-      circleColor = "rate-circle rate-circle_good-rating";
-   } else {
-      circleColor = "rate-circle rate-circle_high-rating";
-   }
+   const circleClassnames = classNames("rate-circle", {
+      'rate-circle_low-rating': vote_average < 3,
+      'rate-circle_avarage-rating': vote_average < 5 && vote_average > 3,
+      'rate-circle_good-rating': vote_average < 7 && vote_average > 5,
+      'rate-circle_high-rating': vote_average > 7,
+   });
 
    return (
       <li className="film-list__item film-card">
@@ -44,7 +40,7 @@ const RatedMovieCard = ({ title, overview, release_date, posterURL, id, unRateMo
                <h2 className="film-card__header">
                   {title}
                </h2>
-               <div className={circleColor}>
+               <div className={circleClassnames}>
                   {vote_average}
                </div>
             </div>
